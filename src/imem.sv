@@ -1,13 +1,17 @@
-module imem (input logic [31:0] a,
-            output logic [31:0] rd
+`timescale 1ns/1ps
+// Instruction Memory 64 words x 32 bits
+
+module imem (
+    
+        input logic  [31:0] a,
+        output logic [31:0] rd
+
     );
 
-    (* rom_style="distributed" *) logic [31:0] ROM[63:0];
+    logic [31:0] ROM[63:0];
     
-    initial begin
-        $readmemh("C:/Users/Yesmurat Sagyndyk/Downloads/rv32i-main/rv32i-main/imem.txt", ROM);
-    end
+    initial $readmemh("...", ROM);
 
-    assign rd = ROM[a[31:2]]; // word aligned
+    assign rd = ROM[ a[31:2] ];
 
 endmodule // Instruction memory

@@ -3,8 +3,8 @@
 
 module top (
     
-        input logic clk,
-        input logic clr,
+        input logic        clk,
+        input logic        clr,
         output logic [3:0] LED
 
     );
@@ -18,20 +18,36 @@ module top (
     logic [3:0] byteEnable; 
 
     riscv riscv(
-        .clk(clk),
-        .clr(clr),
-        .RD_instr(RD_instr),
-        .RD_data(RD_data),
-        .PCF(PCF),
-        .ALUResultM(ALUResultM),
-        .WriteDataM(WriteDataM),
-        .MemWriteM(MemWriteM),
-        .byteEnable(byteEnable)
+
+        .clk        (clk),
+        .clr        (clr),
+        .RD_instr   (RD_instr),
+        .RD_data    (RD_data),
+        .PCF        (PCF),
+        .ALUResultM (ALUResultM),
+        .WriteDataM (WriteDataM),
+        .MemWriteM  (MemWriteM),
+        .byteEnable (byteEnable)
+
     );
 
-    imem im( .a(PCF), .rd(RD_instr) );
-    dmem dm(.clk(clk), .we(MemWriteM), .byteEnable(byteEnable),
-            .a(ALUResultM), .wd(WriteDataM), .rd(RD_data));
+    imem im(
+        
+        .a  (PCF),
+        .rd (RD_instr)
+        
+    );
+
+    dmem dm(
+        
+        .clk        (clk),
+        .we         (MemWriteM),
+        .byteEnable (byteEnable),
+        .a          (ALUResultM),
+        .wd         (WriteDataM),
+        .rd         (RD_data)
+        
+    );
 
     assign LED = ALUResultM[3:0];
     

@@ -1,15 +1,18 @@
 module riscv (
 
-        input logic clk, clr,
+        input logic         clk,
+        input logic         clr,
 
         // inputs from Instruction and Data memories
-        input logic [31:0] RD_instr, RD_data,
+        input logic [31:0]  RD_instr,
+        input logic [31:0]  RD_data,
 
         // outputs to Instruction and Data memories
         output logic [31:0] PCF,
-        output logic [31:0] ALUResultM, WriteDataM,
-        output logic MemWriteM,
-        output logic [3:0] byteEnable
+        output logic [31:0] ALUResultM,
+        output logic [31:0] WriteDataM,
+        output logic        MemWriteM,
+        output logic [3:0]  byteEnable
     
     );
 
@@ -44,79 +47,101 @@ module riscv (
     logic jumpRegD;
 
     controller c(
-        .op(InstrD[6:0]),
-        .funct3(InstrD[14:12]),
-        .funct7b5(InstrD[30]),
+
+        .op             (InstrD[6:0]),
+        .funct3         (InstrD[14:12]),
+        .funct7b5       (InstrD[30]),
         
-        .RegWriteD(RegWriteD),
-        .ResultSrcD(ResultSrcD),
-        .MemWriteD(MemWriteD),
-        .JumpD(JumpD),
-        .BranchD(BranchD),
-        .ALUControlD(ALUControlD),
-        .ALUSrcD(ALUSrcD),
-        .ImmSrcD(ImmSrcD),
-        .SrcAsrcD(SrcAsrcD),
-        .funct3D(funct3),
-        .jumpRegD(jumpRegD)
+        .RegWriteD      (RegWriteD),
+        .ResultSrcD     (ResultSrcD),
+        .MemWriteD      (MemWriteD),
+        .JumpD          (JumpD),
+        .BranchD        (BranchD),
+        .ALUControlD    (ALUControlD),
+        .ALUSrcD        (ALUSrcD),
+        .ImmSrcD        (ImmSrcD),
+        .SrcAsrcD       (SrcAsrcD),
+        .funct3D        (funct3),
+        .jumpRegD       (jumpRegD)
     );
 
-    datapath dp(.clk(clk), .clr(clr),
+    datapath dp(
+        
+        .clk                (clk),
+        .clr                (clr),
 
-                // Control signals
-                .RegWriteD(RegWriteD),
-                .ResultSrcD(ResultSrcD),
-                .MemWriteD(MemWriteD),
-                .JumpD(JumpD),
-                .BranchD(BranchD),
-                .ALUControlD(ALUControlD),
-                .ALUSrcD(ALUSrcD),
-                .ImmSrcD(ImmSrcD),
-                .SrcAsrcD(SrcAsrcD),
-                .funct3D(funct3),
-                .jumpRegD(jumpRegD),
+        // Control signals
+        .RegWriteD          (RegWriteD),
+        .ResultSrcD         (ResultSrcD),
+        .MemWriteD          (MemWriteD),
+        .JumpD              (JumpD),
+        .BranchD            (BranchD),
+        .ALUControlD        (ALUControlD),
+        .ALUSrcD            (ALUSrcD),
+        .ImmSrcD            (ImmSrcD),
+        .SrcAsrcD           (SrcAsrcD),
+        .funct3D            (funct3),
+        .jumpRegD           (jumpRegD),
 
-                // inputs from Hazard unit
-                .StallF(StallF), .StallD(StallD), .FlushD(FlushD), .FlushE(FlushE),
-                .ForwardAE(ForwardAE), .ForwardBE(ForwardBE),
+        // inputs from Hazard unit
+        .StallF             (StallF),
+        .StallD             (StallD),
+        .FlushD             (FlushD),
+        .FlushE             (FlushE),
+        .ForwardAE          (ForwardAE),
+        .ForwardBE          (ForwardBE),
 
-                .RD_instr(RD_instr), .RD_data(RD_data),
+        .RD_instr           (RD_instr),
+        .RD_data            (RD_data),
 
-                // outputs to Instruction and Data memories
-                .PCF(PCF),
-                .ALUResultM(ALUResultM), .WriteDataM(WriteDataM),
-				.MemWriteM(MemWriteM),
-                .InstrD(InstrD),
-                .byteEnable(byteEnable),
+        // outputs to Instruction and Data memories
+        .PCF                (PCF),
+        .ALUResultM         (ALUResultM),
+        .WriteDataM         (WriteDataM),
+		.MemWriteM          (MemWriteM),
+        .InstrD             (InstrD),
+        .byteEnable         (byteEnable),
 
-                // outputs to Hazard unit
-                .Rs1D(Rs1D), .Rs2D(Rs2D),
-                .Rs1E(Rs1E), .Rs2E(Rs2E),
-                .PCSrcE(PCSrcE), .ResultSrcE_zero(ResultSrcE_zero),
-                .RegWriteM(RegWriteM), .RegWriteW(RegWriteW),
-                .RdE(RdE),
-                .RdM(RdM),
-                .RdW(RdW),
-                .SrcAsrcE(SrcAsrcE),
-                .ALUSrcE(ALUSrcE)
+        // outputs to Hazard unit
+        .Rs1D               (Rs1D),
+        .Rs2D               (Rs2D),
+        .Rs1E               (Rs1E),
+        .Rs2E               (Rs2E),
+        .PCSrcE             (PCSrcE),
+        .ResultSrcE_zero    (ResultSrcE_zero),
+        .RegWriteM          (RegWriteM),
+        .RegWriteW          (RegWriteW),
+        .RdE                (RdE),
+        .RdM                (RdM),
+        .RdW                (RdW),
+        .SrcAsrcE           (SrcAsrcE),
+        .ALUSrcE            (ALUSrcE)
+        
     );
 
     hazard hu(
-        .Rs1D(Rs1D), .Rs2D(Rs2D),
-        .Rs1E(Rs1E), .Rs2E(Rs2E), .RdE(RdE),
-        .PCSrcE(PCSrcE),
-        .ResultSrcE_zero(ResultSrcE_zero),
-        .RdM(RdM),
-        .RegWriteM(RegWriteM),
-        .RdW(RdW),
-        .RegWriteW(RegWriteW),
-        .SrcAsrcE(SrcAsrcE),
-        .ALUSrcE(ALUSrcE),
 
-        .StallF(StallF),
-        .StallD(StallD), .FlushD(FlushD),
-        .FlushE(FlushE),
-        .ForwardAE(ForwardAE), .ForwardBE(ForwardBE)
+        .Rs1D               (Rs1D),
+        .Rs2D               (Rs2D),
+        .Rs1E               (Rs1E),
+        .Rs2E               (Rs2E),
+        .RdE                (RdE),
+        .PCSrcE             (PCSrcE),
+        .ResultSrcE_zero    (ResultSrcE_zero),
+        .RdM                (RdM),
+        .RegWriteM          (RegWriteM),
+        .RdW                (RdW),
+        .RegWriteW          (RegWriteW),
+        .SrcAsrcE           (SrcAsrcE),
+        .ALUSrcE            (ALUSrcE),
+
+        .StallF             (StallF),
+        .StallD             (StallD),
+        .FlushD             (FlushD),
+        .FlushE             (FlushE),
+        .ForwardAE          (ForwardAE),
+        .ForwardBE          (ForwardBE)
+
     );
     
 endmodule

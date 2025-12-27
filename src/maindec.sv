@@ -1,14 +1,14 @@
 module maindec (
     
-            input logic [6:0] op,
-            output logic [1:0] ResultSrcD,
-            output logic MemWriteD,
-            output logic BranchD, ALUSrcD,
-            output logic RegWriteD, JumpD,
-            output logic [2:0] ImmSrcD,
-            output logic [1:0] ALUOp,
-            output logic SrcAsrcD,
-            output logic jumpRegD
+            input logic   [6:0] op,
+            output logic  [1:0] ResultSrcD,
+            output logic        MemWriteD,
+            output logic        BranchD, ALUSrcD,
+            output logic        RegWriteD, JumpD,
+            output logic  [2:0] ImmSrcD,
+            output logic  [1:0] ALUOp,
+            output logic        SrcAsrcD,
+            output logic        jumpRegD
             
     );
 
@@ -18,6 +18,7 @@ module maindec (
             ResultSrcD, BranchD, ALUOp, JumpD, SrcAsrcD, jumpRegD} = controls;
 
     always_comb begin
+
         unique case (op)
 
             // {RegWrite, ImmSrc[2:0], ALUSrc, MemWrite, ResultSrc[1:0], Branch, ALUOp[1:0], Jump, SrcAsrc, jumpReg}
@@ -35,6 +36,7 @@ module maindec (
             default: controls = 14'b0;
 
         endcase
+        
     end
     
 endmodule
