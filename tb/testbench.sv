@@ -6,13 +6,15 @@ module testbench;
 
     logic clk;
     logic reset;
-    logic [3:0] LED;
+    logic [4:0] Rs1, Rs2;
 
-    top DUT(
+    riscv dut (
 
         .clk(clk),
         .reset(reset),
-        .LED(LED)
+        
+        .Rs1(Rs1),
+        .Rs2(Rs2)
 
     );
 
