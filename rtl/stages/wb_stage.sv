@@ -12,7 +12,7 @@ module wb_stage (
 
         .d0     ( inputs.data.ALUResult ),
         .d1     ( inputs.data.load_data ),
-        .d2     ( inputs.data.PClus4    ),
+        .d2     ( inputs.data.PCPlus4    ),
         .d3     ( inputs.data.ImmExt    ),
         .s      ( inputs.ctrl.ResultSrc ),
         .y      ( ResultW               )

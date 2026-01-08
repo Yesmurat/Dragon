@@ -19,8 +19,6 @@ module dmem (
     always_ff @(posedge clk) begin
 
         if (we) 
-        
-            assert(byteEnable != 4'b0000);
 
             if (byteEnable[0])
                 RAM[ a[31:2] ][7:0] <= wd[7:0];

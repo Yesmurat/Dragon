@@ -66,14 +66,13 @@ module datapath (
 
         .clk            (clk),
         .reset          (reset | FlushD),
-        .en             (~StallD),
-
-        .inputs         (ifid.rd),
+        // .en             (~StallD),
         
         .RegWriteW      (RegWriteW),
         .RdW            (RdW),
         .ResultW        (ResultW),
         
+        .inputs         (ifid.rd),
         .outputs        (idex.wr)
 
     );
@@ -113,7 +112,7 @@ module datapath (
 
     assign RdM = exmem.data.Rd;
     assign RegWriteM = exmem.ctrl.RegWrite;
-    assign ALUResultM = memwb.wr.ALUResult;
+    assign ALUResultM = memwb.data.ALUResult;
 
     wb_stage WB (
 
