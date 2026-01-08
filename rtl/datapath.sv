@@ -30,10 +30,10 @@ module datapath (
 );
 
     // pipeline interfaces
-    ifid_if  ifid;
-    idex_if  idex;
-    exmem_if exmem;
-    memwb_if memwb;
+    ifid_if  ifid();
+    idex_if  idex();
+    exmem_if exmem();
+    memwb_if memwb();
 
     logic [31:0] PCF_new;
     logic [31:0] PCPlus4F;
