@@ -13,8 +13,6 @@ module id_stage (
 );
 
     logic [31:0] Instr;
-    logic [31:0] PC;
-    logic [31:0] PCPlus4;
     logic [2:0] ImmSrc;
 
     assign Instr = inputs.data.instr;

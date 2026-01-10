@@ -58,9 +58,11 @@ module datapath (
         .reset      (reset),
         .en         (~StallF),
         .PCF_new    (PCF_new),
-        .outputs    (ifid.wr)
+        .outputs    (ifid)
 
     );
+
+    assign PCPlus4F = ifid.data.PCPlus4;
 
     id_stage ID (
 
@@ -68,12 +70,12 @@ module datapath (
         .reset          (reset | FlushD),
         // .en             (~StallD),
         
-        .RegWriteW      (RegWriteW),
-        .RdW            (RdW),
+        .RegWriteW      (memwb.ctrl.RegWrite),
+        .RdW            (memwb.data.Rd),
         .ResultW        (ResultW),
         
-        .inputs         (ifid.rd),
-        .outputs        (idex.wr)
+        .inputs         (ifid),
+        .outputs        (idex)
 
     );
 
@@ -90,8 +92,8 @@ module datapath (
         .PCSrcE         (PCSrcE),
         .PCTargetE      (PCTargetE),
 
-        .inputs         (idex.rd),
-        .outputs        (exmem.wr)
+        .inputs         (idex),
+        .outputs        (exmem)
 
     );
 
@@ -105,8 +107,8 @@ module datapath (
 
         .clk        (clk),
         .reset      (reset),
-        .inputs     (exmem.rd),
-        .outputs    (memwb.wr)
+        .inputs     (exmem),
+        .outputs    (memwb)
 
     );
 
@@ -118,16 +120,13 @@ module datapath (
 
         .inputs         (memwb.rd),
 
-        .RegWriteW      (RegWriteW),
-        .RdW            (RdW),
+        .RegWriteW      (memwb.ctrl.RegWrite),
+        .RdW            (memwb.data.Rd),
         .ResultW        (ResultW)
 
     );
 
     assign RdW = memwb.data.Rd;
     assign RegWriteW = memwb.ctrl.RegWrite;
-
-    assign PCF_new = PCSrcE ? PCTargetE : PCPlus4F;
-
 
 endmodule
