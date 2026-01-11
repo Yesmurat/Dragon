@@ -1,11 +1,13 @@
+import pipeline_pkg::idex_t;
+
 module idex_reg (
     
     input logic clk,
     input logic en,
     input logic reset,
 
-    idex_if.rd inputs,
-    idex_if.wr outputs
+    input idex_t inputs,
+    output idex_t outputs
 
 );
 

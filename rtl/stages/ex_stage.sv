@@ -11,10 +11,12 @@ module ex_stage (
         output logic        PCSrcE,
         output logic [31:0] PCTargetE,
 
-        output logic [4:0]  Rs1E, Rs2E,
+        input idex_t inputs,
+        output exmem_t outputs,
 
-        input ifid_t inputs,
-        output exmem_t outputs
+        // outputs to hazard unit
+        output logic [4:0]  Rs1E, Rs2E, RdE,
+        output logic ResultSrcE_zero
 
 );
 
@@ -98,5 +100,8 @@ module ex_stage (
 
     assign Rs1E = inputs.Rs1;
     assign Rs2E = inputs.Rs2;
+    assign RdE =  inputs.Rd;
+
+    assign ResultSrcE_zero = inputs.ResultSrc[0];
 
 endmodule

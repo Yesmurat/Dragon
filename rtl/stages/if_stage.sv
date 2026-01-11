@@ -8,8 +8,12 @@ module if_stage (
         
     );
 
-    assign outputs.PC = PC;
-    assign outputs.PCPlus4 = PC + 32'd4;
+    always_comb begin
+
+        outputs.PC = PC;
+        outputs.PCPlus4 = PC + 32'd4;
+        
+    end
 
     imem instr_mem(
 

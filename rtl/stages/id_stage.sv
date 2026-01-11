@@ -11,7 +11,9 @@ module id_stage (
         input logic [31:0]   ResultW,
 
         input ifid_t inputs,
-        output idex_t outputs
+        output idex_t outputs,
+
+        output logic [4:0] Rs1D, Rs2D
 
 );
 
@@ -73,5 +75,8 @@ module id_stage (
     assign outputs.Rd =  Instr[11:7];
 
     assign outputs.funct3 = Instr[14:12];
+
+    assign Rs1D = Instr[19:15];
+    assign Rs2D = Instr[24:20];
 
 endmodule

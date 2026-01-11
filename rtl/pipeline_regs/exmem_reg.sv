@@ -1,11 +1,13 @@
+import pipeline_pkg::exmem_t;
+
 module exmem_reg (
 
     input logic clk,
     input logic en,
     input logic reset,
 
-    exmem_if.rd inputs,
-    exmem_if.wr outputs
+    input exmem_t inputs,
+    output exmem_t outputs
     
 );
 

@@ -1,11 +1,13 @@
+import pipeline_pkg::ifid_t;
+
 module ifid_reg (
 
     input logic clk,
     input logic en,
     input logic reset,
 
-    input if_data_t inputs,
-    output if_data_t outputs
+    input ifid_t inputs,
+    output ifid_t outputs
     
 );
 

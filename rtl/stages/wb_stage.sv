@@ -6,7 +6,7 @@ module wb_stage (
         
         output logic        RegWriteW,
         output logic [4:0]  RdW,
-        output logic        ResultW
+        output logic [31:0] ResultW
 
 );
 

@@ -1,3 +1,6 @@
+import pipeline_pkg::*;
+import hazard_io::*;
+
 `timescale 1ns/1ps
 
 module datapath (
@@ -6,26 +9,28 @@ module datapath (
                 input logic         reset,
                 
                 // input signals from Hazard Unit
-                input logic         StallF,
-                input logic         StallD,
-                input logic         FlushD,
-                input logic         FlushE,
-                input logic  [1:0]  ForwardAE,
-                input logic  [1:0]  ForwardBE,
+                // input logic         StallF,
+                // input logic         StallD,
+                // input logic         FlushD,
+                // input logic         FlushE,
+                // input logic  [1:0]  ForwardAE,
+                // input logic  [1:0]  ForwardBE,
+                input hazard_out dp_inputs,
+                output hazard_in dp_outputs
 
                 // outputs to Hazard Unit
-                output logic [4:0]  Rs1D,
-                output logic [4:0]  Rs2D,
-                output logic [4:0]  Rs1E,
-                output logic [4:0]  Rs2E,
-                output logic [4:0]  RdE,
-                output logic [4:0]  RdM,
-                output logic [4:0]  RdW,
+                // output logic [4:0]  Rs1D,
+                // output logic [4:0]  Rs2D,
+                // output logic [4:0]  Rs1E,
+                // output logic [4:0]  Rs2E,
+                // output logic [4:0]  RdE,
+                // output logic [4:0]  RdM,
+                // output logic [4:0]  RdW,
 
-                output logic        ResultSrcE_zero,
-                output logic        RegWriteM,
-                output logic        RegWriteW,
-                output logic        PCSrcE
+                // output logic        ResultSrcE_zero,
+                // output logic        RegWriteM,
+                // output logic        RegWriteW,
+                // output logic        PCSrcE
 
 );
 
@@ -37,15 +42,13 @@ module datapath (
     logic [31:0] ResultW;
     logic [31:0] ALUResultM;
 
+    ifid_t ifid_d, ifid_q;
+    idex_t idex_d, idex_q;
+    exmem_t exmem_d, exmem_q;
+    memwb_t memwb_d, memwb_q;
+
     // PC mux
-    mux2 pcmux(
-
-        .d0     (PCPlus4F),
-        .d1     (PCTargetE),
-        .s      (PCSrcE),
-        .y      (PCF_new)
-
-    );
+    assign PCF_new = PCSrcE ? PCTargetE : PCPlus4F;
 
     pc_reg PC_reg (
 
@@ -61,7 +64,7 @@ module datapath (
     if_stage IF (
 
         .PC         (PCF),
-        .outputs    ()
+        .outputs    (ifid_d)
 
     );
 
@@ -71,8 +74,8 @@ module datapath (
         .en         (~StallD),
         .reset      (reset | FlushD),
 
-        .inputs     (),
-        .outputs    ()
+        .inputs     (ifid_d),
+        .outputs    (ifid_q)
 
     );
 
@@ -85,8 +88,11 @@ module datapath (
         .RdW            (RdW),
         .ResultW        (ResultW),
         
-        .inputs         (),
-        .outputs        ()
+        .inputs         (ifid_q),
+        .outputs        (idex_d),
+
+        .Rs1D           ( dp_outputs.Rs1D ),
+        .Rs2D           ( dp_outputs.Rs2D )
 
     );
 
@@ -96,26 +102,28 @@ module datapath (
         .en         (1'b1),
         .reset      (reset | FlushE),
 
-        .inputs     (),
-        .outputs    ()
+        .inputs     (idex_d),
+        .outputs    (idex_q)
 
     );
 
     ex_stage EX (
 
-        .ResultW        (ResultW),
-        .ALUResultM     (ALUResultM),
-        .ForwardAE      (ForwardAE),
-        .ForwardBE      (ForwardBE),
+        .ResultW         (ResultW),
+        .ALUResultM      (ALUResultM),
+        .ForwardAE       (ForwardAE),
+        .ForwardBE       (ForwardBE),
 
-        .PCSrcE         (PCSrcE),
-        .PCTargetE      (PCTargetE),
+        .PCSrcE          (PCSrcE),
+        .PCTargetE       (PCTargetE),
 
-        .Rs1E           (Rs1E),
-        .Rs2E           (Rs2E),
+        .Rs1E            ( dp_outputs.Rs1E),
+        .Rs2E            ( dp_outputs.Rs2E),
+        .RdE             ( dp_outputs.RdE),
+        .ResultSrcE_zero ( dp_outputs.ResultSrcE_zero),
 
-        .inputs         (),
-        .outputs        ()
+        .inputs          (idex_q),
+        .outputs         (exmem_d)
 
     );
 
@@ -125,16 +133,21 @@ module datapath (
         .en         (1'b1),
         .reset      (reset),
 
-        .inputs     (),
-        .outputs    ()
+        .inputs     (exmem_d),
+        .outputs    (exmem_q)
 
     );
 
     mem_stage MEM (
 
         .clk        (clk),
-        .inputs     (),
-        .outputs    ()
+        .inputs     (exmem_q),
+        .outputs    (memwb_d),
+
+        .ALUResultM (ALUResultM),
+
+        .RdM        ( dp_outputs.RdM ),
+        .RegWriteM  ( dp_outputs. RegWriteM )
 
     );
 
@@ -144,14 +157,14 @@ module datapath (
         .en         (1'b1),
         .reset      (reset),
 
-        .inputs     (),
-        .outputs    ()
+        .inputs     (memwb_d),
+        .outputs    (memwb_q)
 
     );
 
     wb_stage WB (
 
-        .inputs         (),
+        .inputs         (memwb_q),
 
         .RegWriteW      (RegWriteW),
         .RdW            (RdW),
@@ -159,16 +172,6 @@ module datapath (
 
     );
 
-    assign PCPlus4F = ...;
-
-    assign Rs1D = ...;
-    assign Rs2D = ...;
-
-    assign RdE = ...;
-    assign ResultSrcE_zero = ...;
-
-    assign RdM = ...;
-    assign RegWriteM = ...;
-    assign ALUResultM = ...;
+    assign PCPlus4F = ifid_d.PCPlus4;
 
 endmodule

@@ -5,8 +5,14 @@ module mem_stage (
     
         input logic clk,
 
-        input idex_t inputs,
-        output exmem_t outputs
+        input exmem_t inputs,
+        output memwb_t outputs,
+
+        output logic [31:0] ALUResultM,
+
+        // outputs to hazard unit
+        output logic [4:0] RdM,
+        output logic RegWriteM
 
 );
 
@@ -52,5 +58,10 @@ module mem_stage (
     assign outputs.Rd = inputs.Rd;
     assign outputs.PCPlus4 = inputs.PCPlus4;
     assign outputs.ImmExt = inputs.ImmExt;
+
+    assign RdM = inputs.Rd;
+    assign RegWriteM = inputs.RegWrite;
+
+    assign ALUResultM = inputs.ALUResult;
 
 endmodule

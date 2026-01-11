@@ -1,11 +1,13 @@
+import pipeline_pkg::memwb_t;
+
 module memwb_reg (
     
     input logic clk,
     input logic en,
     input logic reset,
 
-    memwb_if.rd inputs,
-    memwb_if.wr outputs
+    input memwb_t inputs,
+    output memwb_t outputs
 );
 
     always_ff @( posedge clk ) begin : memwb_register

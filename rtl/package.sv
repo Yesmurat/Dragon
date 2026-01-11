@@ -68,3 +68,35 @@ package pipeline_pkg;
     } memwb_t;
 
 endpackage
+
+package hazard_io;
+
+    typedef struct packed {
+
+        logic [4:0] Rs1D;
+        logic [4:0] Rs2D;
+        logic [4:0] Rs1E;
+        logic [4:0] Rs2E;
+        logic [4:0] RdE;
+        logic [4:0] RdM;
+        logic [4:0] RdW;
+
+        logic       ResultSrcE_zero;
+        logic       PCSrcE;
+        logic       RegWriteM;
+        logic       RegWriteW;
+
+    } hazard_in;
+
+    typedef struct packed {
+        
+        logic       StallF;
+        logic       StallD;
+        logic       FlushD;
+        logic       FlushE;
+        logic [1:0] ForwardAE;
+        logic [1:0] ForwardBE;
+
+    } hazard_out;
+
+endpackage

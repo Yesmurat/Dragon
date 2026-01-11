@@ -1,20 +1,24 @@
+import hazard_io::*;
+
 `timescale 1ns/1ps
 
 module hazard (
     
-        input logic  [4:0] Rs1D, Rs2D,
-        input logic  [4:0] Rs1E, Rs2E, RdE,
-        input logic        PCSrcE, 
-        input logic        ResultSrcE_zero,
-        input logic  [4:0] RdM,
-        input logic        RegWriteM,
-        input logic  [4:0] RdW,
-        input logic        RegWriteW,
+        // input logic  [4:0] Rs1D, Rs2D,
+        // input logic  [4:0] Rs1E, Rs2E, RdE,
+        // input logic        PCSrcE, 
+        // input logic        ResultSrcE_zero,
+        // input logic  [4:0] RdM,
+        // input logic        RegWriteM,
+        // input logic  [4:0] RdW,
+        // input logic        RegWriteW,
+        input hazard_in inputs,
 
-        output logic       StallF,
-        output logic       StallD, FlushD,
-        output logic       FlushE,
-        output logic [1:0] ForwardAE, ForwardBE
+        // output logic       StallF,
+        // output logic       StallD, FlushD,
+        // output logic       FlushE,
+        // output logic [1:0] ForwardAE, ForwardBE
+        output hazard_out outputs
 
 );
 
@@ -23,36 +27,36 @@ module hazard (
     always_comb begin
 
         // Source A forwarding
-        if ( ( (Rs1E == RdM) && RegWriteM ) && (Rs1E != 0) )
-            ForwardAE = 2'b10;
+        if ( ( ( inputs.Rs1E == inputs.RdM ) && inputs.RegWriteM ) && ( inputs.Rs1E != 0 ) )
+            outputs.ForwardAE = 2'b10;
 
-        else if ( ( (Rs1E == RdW) && RegWriteW ) && (Rs1E != 0) )
-            ForwardAE = 2'b01;
+        else if ( ( ( inputs.Rs1E == inputs.RdW ) && inputs.RegWriteW ) && ( inputs.Rs1E != 0 ) )
+            outputs.ForwardAE = 2'b01;
 
         else
-            ForwardAE = 2'b00;
+            outputs.ForwardAE = 2'b00;
 
         // Source B forwarding
-        if ( ( (Rs2E == RdM) && RegWriteM ) && (Rs2E != 0) )
-            ForwardBE = 2'b10;
+        if ( ( (inputs.Rs2E == inputs.RdM) && inputs.RegWriteM ) && (inputs.Rs2E != 0) )
+            outputs.ForwardBE = 2'b10;
 
-        else if ( ( (Rs2E == RdW) && RegWriteW ) && (Rs2E != 0) )
-            ForwardBE = 2'b01;
+        else if ( ( (inputs.Rs2E == inputs.RdW) && inputs.RegWriteW ) && (inputs.Rs2E != 0) )
+            outputs.ForwardBE = 2'b01;
 
         else
-            ForwardBE = 2'b00;
+            outputs.ForwardBE = 2'b00;
         
     end
 
     // Load-use hazard
-    assign lwStall = ResultSrcE_zero & ( (Rs1D == RdE) | (Rs2D == RdE) );
+    assign lwStall = inputs.ResultSrcE_zero & ( ( inputs.Rs1D == inputs.RdE ) | ( inputs.Rs2D == inputs.RdE ) );
 
     // Stall IF & ID when a load hazard occurs
-    assign StallF = lwStall;
-    assign StallD = lwStall;
+    assign outputs.StallF = lwStall;
+    assign outputs.StallD = lwStall;
 
     // Flush when a branch is taken, jump occurs, or a load introduces a bubble
-    assign FlushD = PCSrcE;
-    assign FlushE = lwStall | PCSrcE;
+    assign outputs.FlushD = inputs.PCSrcE;
+    assign outputs.FlushE = lwStall | inputs.PCSrcE;
     
 endmodule
