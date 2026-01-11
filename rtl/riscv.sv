@@ -1,3 +1,5 @@
+import hazard_io::*;
+
 `timescale 1ns/1ps
 
 module riscv (
@@ -5,66 +7,78 @@ module riscv (
         input logic         clk,
         input logic         reset,
 
-        output logic [4:0] Rs1, Rs2
+        output logic [4:0]  Rs1D,
+        output logic [4:0]  Rs2D,
+
+        output logic [31:0] dbg_PCF,
+        output logic [31:0] dbg_InstrD,
+        output logic [31:0] dbg_ALUResultE,
+        output logic [31:0] dbg_load_data,
+        output logic        dbg_ResultW
     
     );
 
-    logic StallF, StallD, FlushD, FlushE;
-    logic [1:0] ForwardAE, ForwardBE;
-    logic [4:0] Rs1D, Rs2D, Rs1E, Rs2E, RdE, RdM, RdW;
-    logic ResultSrcE_zero, RegWriteM, RegWriteW, PCSrcE;
+    hazard_in hazard_inputs;
+    hazard_out hazard_outputs;
 
     datapath datapath (
 
         .clk                (clk),
         .reset              (reset),
 
-        .StallF             (StallF),
-        .StallD             (StallD),
-        .FlushD             (FlushD),
-        .FlushE             (FlushE),
-        .ForwardAE          (ForwardAE),
-        .ForwardBE          (ForwardBE),
+        .StallF             ( hazard_outputs.StallF ),
+        .StallD             ( hazard_outputs.StallD ),
+        .FlushD             ( hazard_outputs.FlushD ),
+        .FlushE             ( hazard_outputs.FlushE ),
+        .ForwardAE          ( hazard_outputs.ForwardAE ),
+        .ForwardBE          ( hazard_outputs.ForwardBE ),
 
-        .Rs1D               (Rs1D),
-        .Rs2D               (Rs2D),
-        .Rs1E               (Rs1E),
-        .Rs2E               (Rs2E),
-        .RdE                (RdE),
-        .RdM                (RdM),
-        .RdW                (RdW),
+        .Rs1D               ( hazard_inputs.Rs1D ),
+        .Rs2D               ( hazard_inputs.Rs2D ),
+        .Rs1E               ( hazard_inputs.Rs1E ),
+        .Rs2E               ( hazard_inputs.Rs2E ),
+        .RdE                ( hazard_inputs.RdE ),
+        .RdM                ( hazard_inputs.RdM ),
+        .RdW                ( hazard_inputs.RdW ),
 
-        .ResultSrcE_zero    (ResultSrcE_zero),
-        .RegWriteM          (RegWriteM),
-        .RegWriteW          (RegWriteW),
-        .PCSrcE             (PCSrcE)
+        .ResultSrcE_zero    ( hazard_inputs.ResultSrcE_zero ),
+        .RegWriteM          ( hazard_inputs.RegWriteM ),
+        .RegWriteW          ( hazard_inputs.RegWriteW ),
+        .PCSrcE             ( hazard_inputs.PCSrcE ),
+
+        // Debug signals
+        .dbg_PCF            (dbg_PCF),
+        .dbg_InstrD         (dbg_InstrD),
+        .dbg_ALUResultE     (dbg_ALUResultE),
+        .dbg_load_data      (dbg_load_data),
+        .dbg_ResultW        (dbg_ResultW)
 
     );
 
     hazard hazard (
 
-        .StallF             (StallF),
-        .StallD             (StallD),
-        .FlushD             (FlushD),
-        .FlushE             (FlushE),
-        .ForwardAE          (ForwardAE),
-        .ForwardBE          (ForwardBE),
+        .StallF             ( hazard_outputs.StallF ),
+        .StallD             ( hazard_outputs.StallD ),
+        .FlushD             ( hazard_outputs.FlushD ),
+        .FlushE             ( hazard_outputs.FlushE ),
+        .ForwardAE          ( hazard_outputs.ForwardAE ),
+        .ForwardBE          ( hazard_outputs.ForwardBE ),
 
-        .Rs1D               (Rs1D),
-        .Rs2D               (Rs2D),
-        .Rs1E               (Rs1E),
-        .Rs2E               (Rs2E),
-        .RdE                (RdE),
-        .PCSrcE             (PCSrcE),
-        .ResultSrcE_zero    (ResultSrcE_zero),
-        .RdM                (RdM),
-        .RegWriteM          (RegWriteM),
-        .RdW                (RdW),
-        .RegWriteW          (RegWriteW)
+        .Rs1D               ( hazard_inputs.Rs1D ),
+        .Rs2D               ( hazard_inputs.Rs2D ),
+        .Rs1E               ( hazard_inputs.Rs1E ),
+        .Rs2E               ( hazard_inputs.Rs2E ),
+        .RdE                ( hazard_inputs.RdE ),
+        .PCSrcE             ( hazard_inputs.PCSrcE ),
+        .ResultSrcE_zero    ( hazard_inputs.ResultSrcE_zero ),
+        .RdM                ( hazard_inputs.RdM ),
+        .RegWriteM          ( hazard_inputs.RegWriteM ),
+        .RdW                ( hazard_inputs.RdW ),
+        .RegWriteW          ( hazard_inputs.RegWriteW )
 
     );
 
-    assign Rs1 = Rs1D;
-    assign Rs2 = Rs2D;
+    assign Rs1D = hazard_inputs.Rs1D;
+    assign Rs2D = hazard_inputs.Rs2D;
     
 endmodule

@@ -34,7 +34,7 @@ module mem_stage (
         .clk            (clk),
         .we             (inputs.MemWrite),
         .byteEnable     (byteEnable),
-        .address        (inputs.ALUResult),
+        .address        (inputs.ALUResult[31:2]),
         .wd             (inputs.WriteData), // WriteDataM
 
         .rd             (RD_data)

@@ -6,7 +6,7 @@ module dmem (
         input logic             we,
         input logic  [3:0]      byteEnable,
 
-        input logic  [31:0]     address,
+        input logic  [29:0]     address,
         input logic  [31:0]     wd, // WriteDataM
 
         output logic [31:0]     rd
@@ -22,18 +22,18 @@ module dmem (
         if (we) 
 
             if (byteEnable[0])
-                RAM[ address[31:2] ][7:0] <= wd[7:0];
+                RAM[ address ] [7:0] <= wd[7:0];
 
             if (byteEnable[1])
-                RAM[ address[31:2] ][15:8] <= wd[15:8];
+                RAM[ address ] [15:8] <= wd[15:8];
 
             if (byteEnable[2])
-                RAM[ address[31:2] ][23:16] <= wd[23:16];
+                RAM[ address ] [23:16] <= wd[23:16];
 
             if (byteEnable[3])
-                RAM[ address[31:2] ][31:24] <= wd[31:24];
+                RAM[ address ] [31:24] <= wd[31:24];
 
-            rd <= RAM[ address[31:2] ];
+            rd <= RAM[ address ];
 
     end
 

@@ -9,28 +9,33 @@ module datapath (
                 input logic         reset,
                 
                 // input signals from Hazard Unit
-                // input logic         StallF,
-                // input logic         StallD,
-                // input logic         FlushD,
-                // input logic         FlushE,
-                // input logic  [1:0]  ForwardAE,
-                // input logic  [1:0]  ForwardBE,
-                input hazard_out dp_inputs,
-                output hazard_in dp_outputs
+                input logic         StallF,
+                input logic         StallD,
+                input logic         FlushD,
+                input logic         FlushE,
+                input logic  [1:0]  ForwardAE,
+                input logic  [1:0]  ForwardBE,
 
                 // outputs to Hazard Unit
-                // output logic [4:0]  Rs1D,
-                // output logic [4:0]  Rs2D,
-                // output logic [4:0]  Rs1E,
-                // output logic [4:0]  Rs2E,
-                // output logic [4:0]  RdE,
-                // output logic [4:0]  RdM,
-                // output logic [4:0]  RdW,
+                output logic [4:0]  Rs1D,
+                output logic [4:0]  Rs2D,
+                output logic [4:0]  Rs1E,
+                output logic [4:0]  Rs2E,
+                output logic [4:0]  RdE,
+                output logic [4:0]  RdM,
+                output logic [4:0]  RdW,
 
-                // output logic        ResultSrcE_zero,
-                // output logic        RegWriteM,
-                // output logic        RegWriteW,
-                // output logic        PCSrcE
+                output logic        ResultSrcE_zero,
+                output logic        RegWriteM,
+                output logic        RegWriteW,
+                output logic        PCSrcE,
+
+                // Debug signals
+                output logic [31:0] dbg_PCF,
+                output logic [31:0] dbg_InstrD,
+                output logic [31:0] dbg_ALUResultE,
+                output logic [31:0] dbg_load_data,
+                output logic        dbg_ResultW
 
 );
 
@@ -52,126 +57,132 @@ module datapath (
 
     pc_reg PC_reg (
 
-        .clk        (clk),
-        .en         (~StallF),
-        .reset      (reset),
+        .clk        ( clk ),
+        .en         ( ~StallF ),
+        .reset      ( reset ),
 
-        .PC_new     (PCF_new),
-        .PC         (PCF)
+        .PC_new     ( PCF_new ),
+        .PC         ( PCF )
 
     );
 
     if_stage IF (
 
-        .PC         (PCF),
-        .outputs    (ifid_d)
+        .PC         ( PCF ),
+
+        .outputs    ( ifid_d ),
+        .PCPlus4F   ( PCPlus4F )
 
     );
 
     ifid_reg IFID_reg (
 
-        .clk        (clk),
-        .en         (~StallD),
-        .reset      (reset | FlushD),
+        .clk        ( clk ),
+        .en         ( ~StallD ),
+        .reset      ( reset | FlushD ),
 
-        .inputs     (ifid_d),
-        .outputs    (ifid_q)
+        .inputs     ( ifid_d ),
+        .outputs    ( ifid_q )
 
     );
 
     id_stage ID (
 
-        .clk            (clk),
-        .reset          (reset | FlushD),
+        .clk            ( clk ),
+        .reset          ( reset | FlushD ),
         
-        .RegWriteW      (RegWriteW),
-        .RdW            (RdW),
-        .ResultW        (ResultW),
+        .RegWriteW      ( RegWriteW ),
+        .RdW            ( RdW ),
+        .ResultW        ( ResultW ),
         
-        .inputs         (ifid_q),
-        .outputs        (idex_d),
+        .inputs         ( ifid_q ),
+        .outputs        ( idex_d ),
 
-        .Rs1D           ( dp_outputs.Rs1D ),
-        .Rs2D           ( dp_outputs.Rs2D )
+        .Rs1D           ( Rs1D ),
+        .Rs2D           ( Rs2D )
 
     );
 
     idex_reg IDEX_reg (
 
-        .clk        (clk),
-        .en         (1'b1),
-        .reset      (reset | FlushE),
+        .clk        ( clk ),
+        .en         ( 1'b1 ),
+        .reset      ( reset | FlushE ),
 
-        .inputs     (idex_d),
-        .outputs    (idex_q)
+        .inputs     ( idex_d ),
+        .outputs    ( idex_q )
 
     );
 
     ex_stage EX (
 
-        .ResultW         (ResultW),
-        .ALUResultM      (ALUResultM),
-        .ForwardAE       (ForwardAE),
-        .ForwardBE       (ForwardBE),
+        .ResultW         ( ResultW ),
+        .ALUResultM      ( ALUResultM ),
+        .ForwardAE       ( ForwardAE ),
+        .ForwardBE       ( ForwardBE ),
 
-        .PCSrcE          (PCSrcE),
-        .PCTargetE       (PCTargetE),
+        .PCSrcE          ( PCSrcE ),
+        .PCTargetE       ( PCTargetE ),
 
-        .Rs1E            ( dp_outputs.Rs1E),
-        .Rs2E            ( dp_outputs.Rs2E),
-        .RdE             ( dp_outputs.RdE),
-        .ResultSrcE_zero ( dp_outputs.ResultSrcE_zero),
+        .Rs1E            ( Rs1E ),
+        .Rs2E            ( Rs2E ),
+        .RdE             ( RdE ),
+        .ResultSrcE_zero ( ResultSrcE_zero),
 
-        .inputs          (idex_q),
-        .outputs         (exmem_d)
+        .inputs          ( idex_q ),
+        .outputs         ( exmem_d )
 
     );
 
     exmem_reg EXMEM_reg (
 
-        .clk        (clk),
-        .en         (1'b1),
-        .reset      (reset),
+        .clk        ( clk ),
+        .en         ( 1'b1 ),
+        .reset      ( reset ),
 
-        .inputs     (exmem_d),
-        .outputs    (exmem_q)
+        .inputs     ( exmem_d ),
+        .outputs    ( exmem_q )
 
     );
 
     mem_stage MEM (
 
-        .clk        (clk),
-        .inputs     (exmem_q),
-        .outputs    (memwb_d),
+        .clk        ( clk ),
+        .inputs     ( exmem_q ),
+        .outputs    ( memwb_d ),
 
-        .ALUResultM (ALUResultM),
+        .ALUResultM ( ALUResultM ),
 
-        .RdM        ( dp_outputs.RdM ),
-        .RegWriteM  ( dp_outputs. RegWriteM )
+        .RdM        ( RdM ),
+        .RegWriteM  ( RegWriteM )
 
     );
 
     memwb_reg MEMWB_reg (
 
-        .clk        (clk),
-        .en         (1'b1),
-        .reset      (reset),
+        .clk        ( clk ),
+        .en         ( 1'b1 ),
+        .reset      ( reset ),
 
-        .inputs     (memwb_d),
-        .outputs    (memwb_q)
+        .inputs     ( memwb_d ),
+        .outputs    ( memwb_q )
 
     );
 
     wb_stage WB (
 
-        .inputs         (memwb_q),
+        .inputs         ( memwb_q ),
 
-        .RegWriteW      (RegWriteW),
-        .RdW            (RdW),
-        .ResultW        (ResultW)
+        .RegWriteW      ( RegWriteW ),
+        .RdW            ( RdW ),
+        .ResultW        ( ResultW )
 
     );
 
-    assign PCPlus4F = ifid_d.PCPlus4;
+    assign dbg_PCF = PCF;
+    assign dbg_InstrD = ifid_q.instr;
+    assign dbg_ALUResultE = exmem_d.ALUResult;
+    assign dbg_load_data = memwb_d.load_data;
+    assign dbg_ResultW = ResultW;
 
 endmodule
