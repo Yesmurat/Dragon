@@ -3,14 +3,18 @@
 `timescale 1ns/1ps
 // Instruction Memory 256 words
 
-module imem (
+module imem #(
+
+        parameter XLEN = 32,
+        parameter ADDR_WIDTH = 8 // 256 instructions
+)(
     
-        input logic  [29:0] address,
-        output logic [31:0] rd
+        input logic  [ADDR_WIDTH-1:0] address,
+        output logic [XLEN-1:0] rd
 
     );
 
-    (* ram_style = "distributed" *) logic [31:0] ROM[255:0];
+    (* ram_style = "distributed" *) logic [XLEN-1:0] ROM[ 2**ADDR_WIDTH-1 : 0 ];
     
     initial $readmemh("./imem.mem", ROM);
 
