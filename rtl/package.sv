@@ -1,11 +1,11 @@
-package pipeline_pkg;
+package pipeline_pkg #( parameter XLEN = 32 );
     
     // IFID
     typedef struct packed {
 
-        logic [31:0] instr;
-        logic [31:0] PC;
-        logic [31:0] PCPlus4;
+        logic [31:0] instShr;
+        logic [XLEN-1:0] PC;
+        logic [XLEN-1:0] PCPlus4;
 
     } ifid_t;
 
@@ -25,10 +25,10 @@ package pipeline_pkg;
         logic       jumpReg;
 
         // data
-        logic [31:0] RD1, RD2;
-        logic [31:0] PC;
-        logic [31:0] ImmExt;
-        logic [31:0] PCPlus4;
+        logic [XLEN-1:0] RD1, RD2;
+        logic [XLEN-1:0] PC;
+        logic [XLEN-1:0] ImmExt;
+        logic [XLEN-1:0] PCPlus4;
         logic [4:0]  Rs1, Rs2, Rd;
 
     } idex_t;
@@ -43,10 +43,10 @@ package pipeline_pkg;
         logic [2:0] funct3;
 
         // data
-        logic [31:0] ALUResult;
-        logic [31:0] WriteData;
-        logic [31:0] PCPlus4;
-        logic [31:0] ImmExt;
+        logic [XLEN-1:0] ALUResult;
+        logic [XLEN-1:0] WriteData;
+        logic [XLEN-1:0] PCPlus4;
+        logic [XLEN-1:0] ImmExt;
         logic [4:0]  Rd;
 
     } exmem_t;
@@ -59,10 +59,10 @@ package pipeline_pkg;
         logic [1:0] ResultSrc;
 
         // data
-        logic [31:0] ALUResult;
-        logic [31:0] load_data;
-        logic [31:0] ImmExt;
-        logic [31:0] PCPlus4;
+        logic [XLEN-1:0] ALUResult;
+        logic [XLEN-1:0] load_data;
+        logic [XLEN-1:0] ImmExt;
+        logic [XLEN-1:0] PCPlus4;
         logic [4:0]  Rd;
 
     } memwb_t;

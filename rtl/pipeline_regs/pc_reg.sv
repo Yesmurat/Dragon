@@ -1,11 +1,13 @@
-module pc_reg (
+module pc_reg #(
+    parameter XLEN = 32
+) (
 
     input logic         clk,
     input logic         en,
     input logic         reset,
 
-    input logic [31:0]  PC_new,
-    output logic [31:0] PC
+    input logic [XLEN-1:0]  PC_new,
+    output logic [XLEN-1:0] PC
     
 );
 
