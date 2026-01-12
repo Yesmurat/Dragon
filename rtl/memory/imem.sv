@@ -7,7 +7,7 @@ module imem #(
 
         parameter XLEN = 32,
         parameter ADDR_WIDTH = 8 // 256 instructions
-)(
+) (
     
         input logic  [ADDR_WIDTH-1:0] address,
         output logic [XLEN-1:0] rd

@@ -1,7 +1,11 @@
 import pipeline_pkg::ifid_t;
 
-module if_stage
-    #( parameter XLEN = 32 ) (
+module if_stage #(
+    
+        parameter XLEN = 32,
+        parameter ADDR_WIDTH = 8
+        
+    ) (
     
         input logic  [XLEN-1:0] PC,
         output logic [XLEN-1:0] PCPlus4F,
@@ -18,7 +22,12 @@ module if_stage
         
     end
 
-    (* dont_touch = "true" *) imem instr_mem(
+    (* dont_touch = "true" *) #(
+
+        .XLEN(XLEN),
+        .ADDR_WIDTH(ADDR_WIDTH)
+
+    ) imem instr_mem(
 
         .address    ( PC[XLEN-1:2] ),
         .rd         (outputs.instr)
