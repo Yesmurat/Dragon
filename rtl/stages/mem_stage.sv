@@ -1,8 +1,12 @@
 import pipeline_pkg::exmem_t;
 import pipeline_pkg::memwb_t;
 
-module mem_stage
-    #( parameter XLEN = 32 ) (
+module mem_stage #(
+    
+    parameter XLEN = 32,
+    parameter ADDR_WIDTH = 8
+    
+    ) (
     
         input logic clk,
 
@@ -30,7 +34,12 @@ module mem_stage
 
     );
 
-    dmem data_memory(
+    dmem #(
+
+        .XLEN(XLEN),
+        .ADDR_WIDTH(ADDR_WIDTH)
+
+    ) data_memory(
 
         .clk            ( clk ),
         .we             ( inputs.MemWrite ),
@@ -42,7 +51,7 @@ module mem_stage
 
     );
 
-    (* dont_touch = "true" *) loadext loadext(
+    (* dont_touch = "true" *) loadext #(.XLEN(XLEN)) loadext(
 
         .LoadTypeM  ( inputs.funct3 ),
         .RD_data    ( RD_data ),
