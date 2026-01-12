@@ -19,24 +19,10 @@ module wdext #(
 
             unique case (funct3M)
 
-                3'b000: begin // sb
+                3'b000: byteEnable = 1 << byteAddrM; // store byte
 
-                    // case (byteAddrM)
+                3'b001: begin // store half word
 
-                    //     2'b00: byteEnable = 4'b0001;
-                    //     2'b01: byteEnable = 4'b0010;
-                    //     2'b10: byteEnable = 4'b0100;
-                    //     2'b11: byteEnable = 4'b1000;
-
-                    // endcase
-
-                    byteEnable = 1 << byteAddrM;
-
-                end
-
-                3'b001: begin // sh
-
-                    // byteEnable = (byteAddrM[1] == 1'b0) ? 4'b0011 : 4'b1100;
                     for (i = 0; i < XLEN/8; i = i + 1) begin
 
                         if (i[0] == byteAddrM[0]) begin
@@ -47,19 +33,9 @@ module wdext #(
 
                 end
 
-                3'b010: begin // SW/SD
+                3'b010: byteEnable = { (XLEN/8){1'b1} }; // store word / store data
 
-                    // byteEnable = 4'b1111;
-                    byteEnable = { (XLEN/8){1'b1} }; // bytes
-
-                end
-
-                default: begin
-
-                    // byteEnable = 4'b0000;
-                    byteEnable = { (XLEN/8){1'b0} };
-                    
-                end
+                default: byteEnable = { (XLEN/8){1'b0} };
 
             endcase
 

@@ -1,6 +1,6 @@
 package pipeline_pkg;
 
-    parameter XLEN = 32;
+    localparam XLEN = 64;
     
     // IFID
     typedef struct packed {

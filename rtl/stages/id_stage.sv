@@ -1,8 +1,11 @@
 import pipeline_pkg::ifid_t;
 import pipeline_pkg::idex_t;
 
-module id_stage
-    #(parameter XLEN = 32) (
+module id_stage #(
+    
+    parameter XLEN = 32
+    
+) (
     
         input logic         clk,
         input logic         reset,
@@ -24,7 +27,8 @@ module id_stage
 
     assign Instr = inputs.instr;
 
-    (* dont_touch = "true" *) controller #(.XLEN(XLEN)) control_unit(
+    (* dont_touch = "true" *)
+    controller control_unit(
 
         .opcode         ( Instr[6:0]              ),
         .funct3         ( Instr[14:12]            ),
@@ -60,7 +64,8 @@ module id_stage
 
     );
 
-    (* dont_touch = "true" *) extend #(.XLEN(XLEN)) immediate_extend(
+    (* dont_touch = "true" *)
+    extend #(.XLEN(XLEN)) immediate_extend(
 
         .instr_31_7     ( Instr[31:7]         ),
         .immsrc         ( ImmSrc              ),

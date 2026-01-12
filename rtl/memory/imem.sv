@@ -10,11 +10,11 @@ module imem #(
 ) (
     
         input logic  [(ADDR_WIDTH-2) - 1 : 0] address,
-        output logic [XLEN-1:0] rd
+        output logic [31:0] rd
 
     );
 
-    (* ram_style = "distributed" *) logic [XLEN-1:0] ROM[ 2**ADDR_WIDTH-1 : 0 ];
+    (* ram_style = "distributed" *) logic [31:0] ROM[ 2**ADDR_WIDTH-1 : 0 ];
     
     initial $readmemh("./imem.mem", ROM);
 

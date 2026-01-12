@@ -1,96 +1,46 @@
 `timescale 1ns/1ps
 
-module loadext
-    #( parameter XLEN = 32 ) (
+module loadext #(
+    
+    parameter XLEN = 32
+    
+) (
 
     input logic  [2:0]  LoadTypeM, // funct3
     input logic  [XLEN-1:0] RD_data,
-    input logic  [ $clog(XLEN/8)-1 : 0 ]  byteAddrM,
+    input logic  [ $clog2(XLEN/8)-1 : 0 ]  byteAddrM,
     
     output logic [XLEN-1:0] load_data
 
 );
 
+    localparam int BYTE_W = 8;
+    localparam int HWORD_W = 16;
+
+    logic [BYTE_W-1:0] byte_value;
+    logic [HWORD_W-1:0] hword_value;
+
     always_comb begin
+
+        load_data = '0;
+
+        byte_value  = RD_data[ byteAddrM * 8 +: 8 ];
+
+        hword_value = RD_data[ {byteAddrM[$clog2(XLEN/8)-1:1], 1'b0} * BYTE_W +: HWORD_W ];
 
         unique case (LoadTypeM)
 
-            3'b000: begin // lb
+            3'b000: load_data = $signed(byte_value); // load byte
 
-                unique case (byteAddrM)
+            3'b100: load_data = $unsigned(byte_value); // load byte (unsigned)
 
-                    2'b00: load_data = {{24{RD_data[7]}}, RD_data[7:0]}; // sign-extended bits 7:0
+            3'b001: load_data = $signed(hword_value); // load half word
 
-                    2'b01: load_data = {{24{RD_data[15]}}, RD_data[15:8]}; // sign-extended bits 15:8
+            3'b101: load_data = $unsigned(hword_value); // load half word (unsigned)
 
-                    2'b10: load_data = {{24{RD_data[23]}}, RD_data[23:16]}; // sign-extended bits 23:16
+            3'b010: load_data = RD_data; // load word
 
-                    2'b11: load_data = {{24{RD_data[31]}}, RD_data[31:24]}; // sign-extended bits 31:24
-
-                endcase
-                
-            end
-
-            3'b100: begin // lbu
-
-                case (byteAddrM)
-
-                    2'b00: load_data = {24'b0, RD_data[7:0]}; // zero-extended bits 7:0
-
-                    2'b01: load_data = {24'b0, RD_data[15:8]}; // zero-extended bits 15:8
-
-                    2'b10: load_data = {24'b0, RD_data[23:16]}; // zero-extended bits 23:16
-
-                    2'b11: load_data = {24'b0, RD_data[31:24]}; // zero-extended bits 31:24
-
-                endcase
-                
-            end
-
-            3'b001: begin // lh
-
-                if (byteAddrM[1] == 1'b0) begin
-
-                    load_data = {{16{RD_data[15]}}, RD_data[15:0]};
-                    
-                end // first half
-
-
-                else begin
-
-                    load_data = {{16{RD_data[31]}}, RD_data[31:16]};
-                    
-                end // second half
-                
-            end
-
-            3'b101: begin // lhu
-
-                if (byteAddrM[1] == 1'b0) begin
-
-                    load_data = {16'b0, RD_data[15:0]};
-
-                end // first half
-                    
-                else begin
-
-                    load_data = {16'b0, RD_data[31:16]};
-                    
-                end // second half
-
-            end
-
-            3'b010: begin
-
-                load_data = RD_data; // lw
-                
-            end
-
-            default: begin
-                
-                load_data = 32'b0;
-
-            end
+            default: load_data = '0;
 
         endcase
 

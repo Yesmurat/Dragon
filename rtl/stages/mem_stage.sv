@@ -21,13 +21,13 @@ module mem_stage #(
 
 );
 
-    logic [ XLEN/8 - 1 : 0 ] byteEnable;
+    logic [XLEN/8-1:0] byteEnable;
     logic [XLEN-1:0] RD_data;
 
     (* dont_touch = "true" *) wdext wdext(
 
         .MemWriteM  ( inputs.MemWrite ),
-        .byteAddrM  ( inputs.ALUResult[ $clog(XLEN/8)-1 : 0 ] ),
+        .byteAddrM  ( inputs.ALUResult[ $clog2(XLEN/8)-1 : 0 ] ),
         .funct3M    ( inputs.funct3 ),
         
         .byteEnable ( byteEnable )
@@ -55,7 +55,7 @@ module mem_stage #(
 
         .LoadTypeM  ( inputs.funct3 ),
         .RD_data    ( RD_data ),
-        .byteAddrM  ( inputs.ALUResult[ $clog(XLEN/8)-1 : 0 ] ),
+        .byteAddrM  ( inputs.ALUResult[ $clog2(XLEN/8)-1 : 0 ] ),
 
         .load_data  ( outputs.load_data )
 

@@ -14,7 +14,7 @@ module wb_stage #(
 
 );
 
-    mux4 ResultWmux(
+    mux4 #(.XLEN(XLEN)) ResultWmux(
 
         .d0     ( inputs.ALUResult ),
         .d1     ( inputs.load_data ),

@@ -3,7 +3,12 @@ import hazard_io::*;
 
 `timescale 1ns/1ps
 
-module datapath (
+module datapath # (
+
+    parameter XLEN = 32,
+    parameter ADDR_WIDTH = 8
+
+) (
     
                 input logic         clk,
                 input logic         reset,
@@ -31,21 +36,21 @@ module datapath (
                 output logic        PCSrcE,
 
                 // Debug signals
-                output logic [31:0] dbg_PCF,
+                output logic [XLEN-1:0] dbg_PCF,
                 output logic [31:0] dbg_InstrD,
-                output logic [31:0] dbg_ALUResultE,
-                output logic [31:0] dbg_load_data,
-                output logic        dbg_ResultW
+                output logic [XLEN-1:0] dbg_ALUResultE,
+                output logic [XLEN-1:0] dbg_load_data,
+                output logic [XLEN-1:0] dbg_ResultW
 
 );
 
-    logic [31:0] PCF_new;
-    logic [31:0] PCPlus4F;
-    logic [31:0] PCF;
-    logic [31:0] PCTargetE;
+    logic [XLEN-1:0] PCF_new;
+    logic [XLEN-1:0] PCPlus4F;
+    logic [XLEN-1:0] PCF;
+    logic [XLEN-1:0] PCTargetE;
 
-    logic [31:0] ResultW;
-    logic [31:0] ALUResultM;
+    logic [XLEN-1:0] ResultW;
+    logic [XLEN-1:0] ALUResultM;
 
     ifid_t ifid_d, ifid_q;
     idex_t idex_d, idex_q;
@@ -55,7 +60,7 @@ module datapath (
     // PC mux
     assign PCF_new = PCSrcE ? PCTargetE : PCPlus4F;
 
-    pc_reg PC_reg (
+    pc_reg #(.XLEN(XLEN)) PC_reg (
 
         .clk        ( clk ),
         .en         ( ~StallF ),
@@ -66,7 +71,12 @@ module datapath (
 
     );
 
-    if_stage IF (
+    if_stage #(
+
+        .XLEN(XLEN),
+        .ADDR_WIDTH(ADDR_WIDTH)
+
+    ) IF (
 
         .PC         ( PCF ),
         .PCPlus4F   ( PCPlus4F ),
@@ -75,7 +85,7 @@ module datapath (
 
     );
 
-    ifid_reg IFID_reg (
+    ifid_reg IFID_reg  (
 
         .clk        ( clk ),
         .en         ( ~StallD ),
@@ -86,7 +96,7 @@ module datapath (
 
     );
 
-    id_stage ID (
+    id_stage #(.XLEN(XLEN)) ID (
 
         .clk            ( clk ),
         .reset          ( reset | FlushD ),
@@ -114,7 +124,7 @@ module datapath (
 
     );
 
-    ex_stage EX (
+    ex_stage #(.XLEN(XLEN)) EX (
 
         .ResultW         ( ResultW ),
         .ALUResultM      ( ALUResultM ),
@@ -145,7 +155,12 @@ module datapath (
 
     );
 
-    mem_stage MEM (
+    mem_stage #(
+
+        .XLEN(XLEN),
+        .ADDR_WIDTH(ADDR_WIDTH)
+
+    ) MEM (
 
         .clk        ( clk ),
         .inputs     ( exmem_q ),
@@ -169,7 +184,7 @@ module datapath (
 
     );
 
-    (* dont_touch = "true" *) wb_stage WB (
+    (* dont_touch = "true" *) wb_stage #(.XLEN(XLEN)) WB (
 
         .inputs         ( memwb_q ),
 

@@ -4,7 +4,12 @@ import hazard_io::*;
 
 `timescale 1ns/1ps
 
-module riscv (
+module riscv #(
+
+    parameter XLEN = 64,
+    parameter ADDR_WIDTH = 8
+
+) (
 
         input logic         clk,
         input logic         reset,
@@ -12,18 +17,23 @@ module riscv (
         output logic [4:0]  Rs1D,
         output logic [4:0]  Rs2D,
 
-        output logic [31:0] dbg_PCF,
+        output logic [XLEN-1:0] dbg_PCF,
         output logic [31:0] dbg_InstrD,
-        output logic [31:0] dbg_ALUResultE,
-        output logic [31:0] dbg_load_data,
-        output logic        dbg_ResultW
+        output logic [XLEN-1:0] dbg_ALUResultE,
+        output logic [XLEN-1:0] dbg_load_data,
+        output logic [XLEN-1:0] dbg_ResultW
     
     );
 
     hazard_in hazard_inputs;
     hazard_out hazard_outputs;
 
-    datapath datapath (
+    datapath #(
+        
+        .XLEN(XLEN),
+        .ADDR_WIDTH(ADDR_WIDTH)
+
+    ) datapath (
 
         .clk                (clk),
         .reset              (reset),
