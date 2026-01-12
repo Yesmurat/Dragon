@@ -1,19 +1,21 @@
 import pipeline_pkg::ifid_t;
 import pipeline_pkg::idex_t;
 
-module id_stage (
+module id_stage
+    #(parameter XLEN = 32) (
     
         input logic         clk,
         input logic         reset,
 
         input logic          RegWriteW,
         input logic [4:0]    RdW,
-        input logic [31:0]   ResultW,
+        input logic [XLEN-1:0]   ResultW,
 
         input ifid_t inputs,
         output idex_t outputs,
 
-        output logic [4:0] Rs1D, Rs2D
+        output logic [4:0] Rs1D,
+        output logic [4:0] Rs2D
 
 );
 
@@ -22,7 +24,7 @@ module id_stage (
 
     assign Instr = inputs.instr;
 
-    (* dont_touch = "true" *) controller control_unit(
+    (* dont_touch = "true" *) controller #(.XLEN(XLEN)) control_unit(
 
         .opcode         ( Instr[6:0]              ),
         .funct3         ( Instr[14:12]            ),
@@ -41,7 +43,7 @@ module id_stage (
 
     );
 
-    regfile register_file(
+    regfile #(.XLEN(XLEN)) register_file(
 
         .clk    ( clk              ),
         .we3    ( RegWriteW        ),
@@ -58,7 +60,7 @@ module id_stage (
 
     );
 
-    (* dont_touch = "true" *) extend immediate_extend(
+    (* dont_touch = "true" *) extend #(.XLEN(XLEN)) immediate_extend(
 
         .instr_31_7     ( Instr[31:7]         ),
         .immsrc         ( ImmSrc              ),
