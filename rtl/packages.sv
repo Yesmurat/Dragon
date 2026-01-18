@@ -157,3 +157,18 @@ package control_pkg;
         SRA = 4'b1001;
 
 endpackage
+
+package alu_pkg;
+    
+    localparam ADD  = 4'b0000;
+    localparam SUB  = 4'b0001;
+    localparam AND  = 4'b0010;
+    localparam OR   = 4'b0011;
+    localparam XOR  = 4'b0100;
+    localparam SLT  = 4'b0101;  // signed
+    localparam SLTU = 4'b0110;  // unsigned
+    localparam SLL  = 4'b0111;
+    localparam SRL  = 4'b1000;
+    localparam SRA  = 4'b1001;
+
+endpackage
