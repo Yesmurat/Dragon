@@ -1,8 +1,8 @@
 # DragonCore
 
-## DragonCore is a **5-stage pipelined RV32I RISC-V processor** in SystemVerilog.
+## DragonCore is a **5-stage pipelined RV64I RISC-V processor** in SystemVerilog.
 
-The design follows the classic in-order pipeline and supports full execution of the RV32I base integer instruction set. Beyond functional correctness, the project focuses on clean RTL architecture using modern SystemVerilog features to reduce wiring complexity and improve maintainability.
+The design follows the classic in-order pipeline and supports full execution of the RV64I base integer instruction set. Beyond functional correctness, the project focuses on clean RTL architecture using modern SystemVerilog features to reduce wiring complexity and improve maintainability.
 
 The core has been **simulated and verified in Vivado** and **successfully deployed on the Arty S7-25.
 
@@ -37,12 +37,13 @@ The core has been **simulated and verified in Vivado** and **successfully deploy
 - **Target Board:** Arty S7-25 (Xilinx Spartan-7)
 - **Implementation Tool:** Xilinx Vivado
 - **Post-implementation Fmax:** ~100 MHz
-- **Instruction & Data Memories:** Implemented using LUT-based distributed memory
+- **Instruction & Data Memories:** Implemented using Block RAM
 - **Constraints File:** `xdc/arty_s7_25.xdc`
 
 ---
 
 ## Future Work
-- RV64I support
 - Instruction and data caches
+- Atomic Extension Support
+- Mult/Div Unit support
 - AXI-based memory interface
