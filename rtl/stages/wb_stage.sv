@@ -1,5 +1,7 @@
 (* dont_touch = "true" *)
 
+`timescale 1ns/1ps
+
 import pipeline_pkg::memwb_t;
 
 module wb_stage #(

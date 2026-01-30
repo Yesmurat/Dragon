@@ -1,6 +1,8 @@
+`timescale 1ns/1ps
+
 package pipeline_pkg;
 
-    localparam XLEN = 64;
+    localparam XLEN = 32;
     
     // IFID
     typedef struct packed {
@@ -121,34 +123,6 @@ package control_pkg;
         logic       is_word_op;
 
     } control_signals;
-        
-    localparam [6:0]
-        load   = 7'b0000011, // same for rv32 & rv64
-        store  = 7'b0100011, // same for rv32 & rv64
-        r_type  = 7'b0110011,
-        i_type  = 7'b0010011,
-        branch = 7'b1100011,
-        lui    = 7'b0110111,
-        auipc  = 7'b0010111,
-        jal    = 7'b1101111,
-        jalr   = 7'b1100111,
-
-        // rv64
-        i_type64 = 7'b0011011,
-        r_type64 = 7'b0111011;
-
-    localparam [3:0]
-
-        ADD = 4'b0000,
-        SUB = 4'b0001,
-        AND = 4'b0010,
-        OR = 4'b0011,
-        XOR = 4'b0100,
-        SLT = 4'b0101,
-        SLTU = 4'b0110,
-        SLL = 4'b0111,
-        SRL = 4'b1000,
-        SRA = 4'b1001;
 
 endpackage
 

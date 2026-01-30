@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 import pipeline_pkg::idex_t;
 
 module idex_reg (

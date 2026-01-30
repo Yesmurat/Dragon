@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 import pipeline_pkg::ifid_t;
 
 module if_stage #(
@@ -7,10 +9,11 @@ module if_stage #(
         
     ) (
     
+        // input logic             clk,
         input logic  [XLEN-1:0] PC,
 
         output logic [XLEN-1:0] PCPlus4F,
-        output ifid_t outputs
+        output ifid_t           outputs
         
     );
 
@@ -29,7 +32,8 @@ module if_stage #(
 
     ) instr_mem(
 
-        .address    ( PC[ADDR_WIDTH-1:0] ),
+        // .clk        (clk),
+        .address    (PC),
         .rd         (outputs.instr)
 
     );

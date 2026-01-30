@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 import pipeline_pkg::idex_t;
 import pipeline_pkg::exmem_t;
 
@@ -21,7 +23,7 @@ module ex_stage
 
 );
 
-    logic        branchTakenE;
+    logic            branchTakenE;
     logic [XLEN-1:0] SrcAE, SrcBE;
     logic [XLEN-1:0] SrcAE_input1;
 

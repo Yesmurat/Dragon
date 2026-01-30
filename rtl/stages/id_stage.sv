@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 import pipeline_pkg::ifid_t;
 import pipeline_pkg::idex_t;
 

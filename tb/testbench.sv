@@ -3,19 +3,26 @@
 module testbench;
 
     localparam CLK_PERIOD = 10;
-    localparam XLEN = 64;
+    localparam XLEN       = 32;
+    localparam ADDR_WIDTH = 8;
 
     logic clk;
     logic reset;
-    logic [4:0] Rs1D, Rs2D;
+    logic [31:0] RD_instr;
+    logic [XLEN-1:0] RD_data;
 
-    riscv dut (
+    riscv #(
+        
+        .XLEN       (XLEN),
+        .ADDR_WIDTH (ADDR_WIDTH)
+
+    ) dut (
 
         .clk            (clk),
         .reset          (reset),
         
-        .Rs1D           (Rs1D),
-        .Rs2D           (Rs2D)
+        .RD_instr       (RD_instr),
+        .RD_data        (RD_data)
 
     );
 

@@ -1,6 +1,6 @@
 (* dont_touch = "true" *)
 
-import control_pkg::*;
+import control_pkg::control_signals;
 
 `timescale 1ns/1ps
 
@@ -12,6 +12,21 @@ module maindec (
             output control_signals ctrl
             
     );
+
+    localparam [6:0]
+        load   = 7'b0000011, // same for rv32 & rv64
+        store  = 7'b0100011, // same for rv32 & rv64
+        r_type  = 7'b0110011,
+        i_type  = 7'b0010011,
+        branch = 7'b1100011,
+        lui    = 7'b0110111,
+        auipc  = 7'b0010111,
+        jal    = 7'b1101111,
+        jalr   = 7'b1100111,
+
+        // rv64
+        i_type64 = 7'b0011011,
+        r_type64 = 7'b0111011;
 
     always_comb begin
 

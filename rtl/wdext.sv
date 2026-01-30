@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module wdext #(
     parameter XLEN = 32
 ) (

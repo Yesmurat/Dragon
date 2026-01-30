@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 import pipeline_pkg::exmem_t;
 
 module exmem_reg (

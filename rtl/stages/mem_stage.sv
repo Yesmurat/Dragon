@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 import pipeline_pkg::exmem_t;
 import pipeline_pkg::memwb_t;
 
@@ -30,9 +32,7 @@ module mem_stage #(
         .byteAddrM  ( inputs.ALUResult[ $clog2(XLEN/8)-1 : 0 ] ),
         .funct3M    ( inputs.funct3 ),
         
-        .byteEnable ( byteEnable )
-
-    );
+        .byteEnable ( byteEnable ) );
 
     dmem #(
 
@@ -47,9 +47,7 @@ module mem_stage #(
         .address        ( inputs.ALUResult[ADDR_WIDTH-1:0] ),
         .wd             ( inputs.WriteData ), // WriteDataM
 
-        .rd             ( RD_data )
-
-    );
+        .rd             ( RD_data ) );
 
     (* dont_touch = "true" *) loadext #(.XLEN(XLEN)) loadext(
 
@@ -57,9 +55,7 @@ module mem_stage #(
         .RD_data    ( RD_data ),
         .byteAddrM  ( inputs.ALUResult[ $clog2(XLEN/8)-1 : 0 ] ),
 
-        .load_data  ( outputs.load_data )
-
-    );
+        .load_data  ( outputs.load_data ) );
 
     assign outputs.RegWrite = inputs.RegWrite;
     assign outputs.ResultSrc = inputs.ResultSrc;

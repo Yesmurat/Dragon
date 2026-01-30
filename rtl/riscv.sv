@@ -6,7 +6,7 @@ import hazard_io::*;
 
 module riscv #(
 
-    parameter XLEN = 64,
+    parameter XLEN = 32,
     parameter ADDR_WIDTH = 8
 
 ) (
@@ -14,14 +14,8 @@ module riscv #(
         input logic         clk,
         input logic         reset,
 
-        output logic [4:0]  Rs1D,
-        output logic [4:0]  Rs2D
-
-        // output logic [XLEN-1:0] dbg_PCF,
-        // output logic [31:0]     dbg_InstrD,
-        // output logic [XLEN-1:0] dbg_ALUResultE,
-        // output logic [XLEN-1:0] dbg_load_data,
-        // output logic [XLEN-1:0] dbg_ResultW
+        output logic [31:0] RD_instr,
+        output logic [XLEN-1:0] RD_data
     
     );
 
@@ -56,14 +50,10 @@ module riscv #(
         .ResultSrcE_zero    ( hazard_inputs.ResultSrcE_zero ),
         .RegWriteM          ( hazard_inputs.RegWriteM ),
         .RegWriteW          ( hazard_inputs.RegWriteW ),
-        .PCSrcE             ( hazard_inputs.PCSrcE )
+        .PCSrcE             ( hazard_inputs.PCSrcE ),
 
-        // Debug signals
-        // .dbg_PCF            (dbg_PCF),
-        // .dbg_InstrD         (dbg_InstrD),
-        // .dbg_ALUResultE     (dbg_ALUResultE),
-        // .dbg_load_data      (dbg_load_data),
-        // .dbg_ResultW        (dbg_ResultW)
+        .RD_instr           (RD_instr),
+        .RD_data            (RD_data)
 
     );
 
@@ -89,8 +79,5 @@ module riscv #(
         .RegWriteW          ( hazard_inputs.RegWriteW )
 
     );
-
-    assign Rs1D = hazard_inputs.Rs1D;
-    assign Rs2D = hazard_inputs.Rs2D;
     
 endmodule

@@ -1,7 +1,7 @@
+`timescale 1ns/1ps
+
 import pipeline_pkg::*;
 import hazard_io::*;
-
-`timescale 1ns/1ps
 
 module datapath # (
 
@@ -33,14 +33,11 @@ module datapath # (
                 output logic        ResultSrcE_zero,
                 output logic        RegWriteM,
                 output logic        RegWriteW,
-                output logic        PCSrcE
+                output logic        PCSrcE,
 
-                // Debug signals
-                // output logic [XLEN-1:0] dbg_PCF,
-                // output logic [31:0] dbg_InstrD,
-                // output logic [XLEN-1:0] dbg_ALUResultE,
-                // output logic [XLEN-1:0] dbg_load_data,
-                // output logic [XLEN-1:0] dbg_ResultW
+                // memory outputs
+                output logic [31:0] RD_instr,
+                output logic [XLEN-1:0] RD_data
 
 );
 
@@ -77,10 +74,12 @@ module datapath # (
 
     if_stage #(
 
-        .XLEN(XLEN),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .XLEN       (XLEN),
+        .ADDR_WIDTH (ADDR_WIDTH)
 
     ) IF (
+
+        // .clk        ( clk ),
 
         .PC         ( PCF ),
         .PCPlus4F   ( PCPlus4F ),
@@ -88,6 +87,8 @@ module datapath # (
         .outputs    ( ifid_d )
 
     );
+
+    assign RD_instr = ifid_d.instr;
 
     ifid_reg IFID_reg  (
 
@@ -177,6 +178,8 @@ module datapath # (
 
     );
 
+    assign RD_data = memwb_d.load_data;
+
     memwb_reg MEMWB_reg (
 
         .clk        ( clk ),
@@ -197,11 +200,5 @@ module datapath # (
         .ResultW        ( ResultW )
 
     );
-
-    // assign dbg_PCF = PCF;
-    // assign dbg_InstrD = ifid_q.instr;
-    // assign dbg_ALUResultE = exmem_d.ALUResult;
-    // assign dbg_load_data = memwb_d.load_data;
-    // assign dbg_ResultW = ResultW;
 
 endmodule
