@@ -6,7 +6,7 @@ import pipeline_pkg::memwb_t;
 module mem_stage #(
     
     parameter XLEN = 32,
-    parameter ADDR_WIDTH = 8
+    parameter MEMORY_CAPACITY = 256
     
     ) (
     
@@ -37,14 +37,14 @@ module mem_stage #(
     dmem #(
 
         .XLEN(XLEN),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .MEMORY_CAPACITY(MEMORY_CAPACITY)
 
     ) data_memory(
 
         .clk            ( clk ),
         .we             ( inputs.MemWrite ),
         .byteEnable     ( byteEnable ),
-        .address        ( inputs.ALUResult[ADDR_WIDTH-1:0] ),
+        .address        ( inputs.ALUResult ),
         .wd             ( inputs.WriteData ), // WriteDataM
 
         .rd             ( RD_data ) );

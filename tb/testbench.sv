@@ -4,7 +4,7 @@ module testbench;
 
     localparam CLK_PERIOD = 10;
     localparam XLEN       = 32;
-    localparam ADDR_WIDTH = 8;
+    localparam MEMORY_CAPACITY = 256;
 
     logic clk;
     logic reset;
@@ -14,7 +14,7 @@ module testbench;
     riscv #(
         
         .XLEN       (XLEN),
-        .ADDR_WIDTH (ADDR_WIDTH)
+        .MEMORY_CAPACITY (MEMORY_CAPACITY)
 
     ) dut (
 

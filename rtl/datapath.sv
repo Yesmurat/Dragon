@@ -6,7 +6,7 @@ import hazard_io::*;
 module datapath # (
 
     parameter XLEN = 32,
-    parameter ADDR_WIDTH = 8
+    parameter MEMORY_CAPACITY = 256
 
 ) (
     
@@ -75,7 +75,7 @@ module datapath # (
     if_stage #(
 
         .XLEN       (XLEN),
-        .ADDR_WIDTH (ADDR_WIDTH)
+        .MEMORY_CAPACITY (MEMORY_CAPACITY)
 
     ) IF (
 
@@ -163,7 +163,7 @@ module datapath # (
     mem_stage #(
 
         .XLEN(XLEN),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .MEMORY_CAPACITY(MEMORY_CAPACITY)
 
     ) MEM (
 

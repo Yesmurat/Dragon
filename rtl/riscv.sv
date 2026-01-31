@@ -7,7 +7,7 @@ import hazard_io::*;
 module riscv #(
 
     parameter XLEN = 32,
-    parameter ADDR_WIDTH = 8
+    parameter MEMORY_CAPACITY = 256
 
 ) (
 
@@ -24,8 +24,8 @@ module riscv #(
 
     datapath #(
         
-        .XLEN           (XLEN),
-        .ADDR_WIDTH     (ADDR_WIDTH)
+        .XLEN                (XLEN),
+        .MEMORY_CAPACITY     (MEMORY_CAPACITY)
 
     ) datapath (
 

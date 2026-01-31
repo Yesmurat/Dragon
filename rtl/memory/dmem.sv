@@ -11,7 +11,7 @@ module dmem #(
         input logic                     we,
         input logic  [XLEN/8-1:0]       byteEnable,
         
-        input logic  [MEMORY_CAPACITY-1:0]   address,
+        input logic  [XLEN-1:0]         address,
         input logic  [XLEN-1:0]         wd, // WriteDataM
 
         output logic [XLEN-1:0]         rd
@@ -29,9 +29,8 @@ module dmem #(
             integer i;
             for (i = 0; i < XLEN/8; i = i + 1) begin
 
-                if (byteEnable[i])
-                    RAM[address][8*i +: 8] <= wd[8*i +: 8];
-
+                if (byteEnable[i]) RAM[address][8*i +: 8] <= wd[8*i +: 8];
+                
             end
 
         end

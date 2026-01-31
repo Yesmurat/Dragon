@@ -5,7 +5,7 @@ import pipeline_pkg::ifid_t;
 module if_stage #(
     
         parameter XLEN = 32,
-        parameter ADDR_WIDTH = 8
+        parameter MEMORY_CAPACITY = 256
         
     ) (
     
@@ -27,8 +27,8 @@ module if_stage #(
 
     (* dont_touch = "true" *) imem #(
 
-        .XLEN(XLEN),
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .XLEN               (XLEN),
+        .MEMORY_CAPACITY    (MEMORY_CAPACITY)
 
     ) instr_mem(
 
