@@ -5,13 +5,13 @@
 module imem #(
 
         parameter XLEN       = 32,
-        parameter MEMORY_CAPACITY = 1024 // 256 instructions
+        parameter MEMORY_CAPACITY = 256 // 256 instructions
 
     )
     
     (
         // input logic                   clk,
-        input logic  [XLEN-1:0] address,
+        input logic  [(XLEN-2)-1:0] address,
 
         output logic [31:0]           rd
         
@@ -27,6 +27,6 @@ module imem #(
 
     // end
 
-    assign rd = ROM[address];
+    assign rd = ROM[ address ];
 
 endmodule // Instruction memory

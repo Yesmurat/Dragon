@@ -18,14 +18,14 @@ _boot:
     # Shifts (lower 5 bits used for RV32)
     slli x9,  x1, 2        # x9 = 10 << 2 = 40
     srli x10, x9, 1        # x10 = 40 >> 1 = 20 (logical)
-    srai x11, x2, 1        # x11 = -5 >> 1 (arithmetic)
+    srai x11, x2, 1        # x11 = -5 >> 1 (arithmetic) (fail)
 
     # Comparisons
-    slt  x12, x2, x1       # x12 = 1 (-5 < 10)
-    sltu x13, x2, x1       # unsigned compare
+    slt  x12, x2, x1       # x12 = 1 (-5 < 10) (fail)
+    sltu x13, x2, x1       # unsigned compare (x13 = 0)
 
     # Load upper immediate
-    lui  x14, 0x12345      # x14 = 0x12345000
+    lui  x14, 0x12345      # x14 = 0x12345000 (fail) ...
     addi x14, x14, 0x678   # x14 = 0x12345678
 
     # Memory test

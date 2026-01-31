@@ -20,8 +20,8 @@ module if_stage #(
     always_comb begin
 
         outputs.PC      = PC;
-        outputs.PCPlus4 = PC + 'd4;
-        PCPlus4F        = PC + 'd4;
+        outputs.PCPlus4 = PC + 4;
+        PCPlus4F        = PC + 4;
         
     end
 
@@ -33,8 +33,8 @@ module if_stage #(
     ) instr_mem(
 
         // .clk        (clk),
-        .address    (PC),
-        .rd         (outputs.instr)
+        .address    ( PC[ XLEN-1 : 2 ] ),
+        .rd         ( outputs.instr )
 
     );
 

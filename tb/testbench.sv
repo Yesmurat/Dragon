@@ -13,7 +13,7 @@ module testbench;
 
     riscv #(
         
-        .XLEN       (XLEN),
+        .XLEN            (XLEN),
         .MEMORY_CAPACITY (MEMORY_CAPACITY)
 
     ) dut (
