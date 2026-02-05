@@ -116,7 +116,6 @@ package control_pkg;
         logic       ALUSrcD;
         logic       RegWriteD;
         logic       JumpD;
-        logic [2:0] ImmSrcD;
         logic [1:0] ALUOp;
         logic       SrcAsrcD;
         logic       jumpRegD;
