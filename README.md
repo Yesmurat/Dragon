@@ -100,8 +100,8 @@ dragon-riscv/
 - [ ] Ability to compile and run C programs (not just assembly)
 - [ ] M extension (Integer Multiplication and Division)
 - [ ] Instruction and data caches
-<!-- - [ ] Performance optimizations -->
 - [ ] Additional ISA extensions (A, C, etc.)
+<!-- - [ ] Performance optimizations -->
 
 ---
 
@@ -116,7 +116,7 @@ For detailed design documentation, see:
 
 ## License
 
-This project is licensed under the MIT license - click the following for details: [License](./LICENSE)
+Unless otherwise noted, everything in this repository is covered by the MIT License (see [License](./LICENSE) for full text).
 
 ---
 
