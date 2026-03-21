@@ -82,7 +82,7 @@ Instructions will be provided after behavioral verification is complete...
 
 ## Future Work
 
-- [ ] Complete RV32I verification
+<!-- - [ ] Complete RV32I verification -->
 - [ ] Ability to compile and run C programs (not just assembly)
 - [ ] M extension (Integer Multiplication and Division)
 - [ ] Instruction and data caches
